@@ -1,0 +1,50 @@
+corin@otp-cdobrica-l1:~/Desktop/Tasks/mymodule$ make 
+make -C "/lib/modules/5.15.0-48-generic/build" M=/home/corin/Desktop/Tasks/mymodule modules
+make[1]: Entering directory '/usr/src/linux-headers-5.15.0-48-generic'
+  CC [M]  /home/corin/Desktop/Tasks/mymodule/hello.o
+  MODPOST /home/corin/Desktop/Tasks/mymodule/Module.symvers
+  CC [M]  /home/corin/Desktop/Tasks/mymodule/hello.mod.o
+  LD [M]  /home/corin/Desktop/Tasks/mymodule/hello.ko
+  BTF [M] /home/corin/Desktop/Tasks/mymodule/hello.ko
+Skipping BTF generation for /home/corin/Desktop/Tasks/mymodule/hello.ko due to unavailability of vmlinux
+make[1]: Leaving directory '/usr/src/linux-headers-5.15.0-48-generic'
+
+
+corin@otp-cdobrica-l1:~/Desktop/Tasks/mymodule$ ls
+hello.c   hello.mod    hello.mod.o  Makefile       Module.symvers
+hello.ko  hello.mod.c  hello.o      modules.order
+
+
+corin@otp-cdobrica-l1:~$ sudo mount /dev/sdb2 ~/USB
+corin@otp-cdobrica-l1:~$ cd USB
+
+corin@otp-cdobrica-l1:~/Desktop/Tasks/mymodule$ sudo cp hello.ko ~/USB/lib/modules/6.0.0-yocto-standard-00844-g725737e7c21d/kernel/lib
+
+corin@otp-cdobrica-l1:~/USB/lib/modules/6.0.0-yocto-standard-00844-g725737e7c21d/kernel/lib$ ls
+crc8.ko  crc-ccitt.ko  crc-itu-t.ko  crc-t10dif.ko  hello.ko  ts_bm.ko  ts_fsm.ko  ts_kmp.ko
+corin@otp-cdobrica-l1:~/USB/lib/modules/6.0.0-yocto-standard-00844-g725737e7c21d/kernel/lib$ cd ~
+corin@otp-cdobrica-l1:~$ sudo umount /dev/sdb2
+
+
+NUC: 
+
+root@genericx86-64# cd lib/modules/6.0.0-yocto-standard-00844-g725737e7c21d/kernel/lib
+root@genericx86-64:lib/modules/6.0.0-yocto-standard-00844-g725737e7c21d/kernel/lib# depmod -a
+root@genericx86-64:lib/modules/6.0.0-yocto-standard-00844-g725737e7c21d/kernel/lib# insmod hello.ko
+root@genericx86-64:lib/modules/6.0.0-yocto-standard-00844-g725737e7c21d/kernel/lib# lsmod 
+Module			Size 		Used by
+hello 			16384		0
+snd_hda_codec_hdmi	61440		1
+.............................
+
+root@genericx86-64:lib/modules/6.0.0-yocto-standard-00844-g725737e7c21d/kernel/lib# dmesg | tail -3
+.............................................................
+.............................................................
+[ 97.787623] Hello, World!
+
+root@genericx86-64:lib/modules/6.0.0-yocto-standard-00844-g725737e7c21d/kernel/lib# rmmod hello.ko
+root@genericx86-64:lib/modules/6.0.0-yocto-standard-00844-g725737e7c21d/kernel/lib# dmesg | tail -3
+.............................................................
+[ 97.787623] Hello, World!
+[ 749.912619] Goodbye, World!
+
